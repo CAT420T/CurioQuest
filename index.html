@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Stem experiment ideas</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CurioQuest</title>
+<!-- Google Fonts: Caveat -->
+<link href="https://fonts.googleapis.com/css2?family=Caveat&display=swap" rel="stylesheet">
+<style>
+body {
+  font-family: 'Caveat', cursive;
+  color: black;
+  background-color: #fafafa;
+  margin: 0; padding: 0;
+}
+header {
+  background-color: #fff;
+  text-align: center;
+  padding: 20px;
+  font-size: 32px;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.feed {
+  max-width: 500px;
+  margin: auto;
+  padding: 10px;
+}
+.card {
+  background-color: white;
+  color: black;
+  margin-bottom: 10px;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  cursor: pointer;
+}
+.card:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+.card-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'Caveat', cursive;
+}
+.like { background-color: #ffccd5; color: #800000; }
+.dislike { background-color: #cce5ff; color: #003366; }
+
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 10; 
+  padding-top: 60px; 
+  left: 0; top: 0; 
+  width: 100%; height: 100%; 
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.6);
+}
+.modal-content {
+  background-color: white;
+  color: black;
+  margin: auto; padding: 20px;
+  border-radius: 8px; max-width: 600px;
+  max-height: 80%; overflow-y: auto;
+  font-family: 'Caveat', cursive;
+}
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.close:hover { color: black; }
+</style>
+</head>
+<body>
+
+<header>CurioQuest – Explore 539 STEM Experiments</header>
+<div class="feed" id="feed"></div>
+
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeModal">&times;</span>
+    <h2 id="modalTitle">Title</h2>
+    <p id="modalText">Experiment details...</p>
+  </div>
+</div>
+
+<script>
+// ----------------------------
+// Generate 539 STEM ideas with 152-word placeholders
+// ----------------------------
+const categories = ["Physics", "Chemistry", "Robotics", "Math", "Engineering", "Coding"];
+const difficulty = ["Easy", "Medium", "Hard"];
+const materials = ["Paper", "LEGO", "Ball", "String", "Cup", "Cardboard", "Coins", "Markers", "Bottle"];
+
+let ideas = [];
+for (let i = 1; i <= 539; i++) {
+    let cat = categories[i % categories.length];
+    let diff = difficulty[i % difficulty.length];
+    let mat1 = materials[i % materials.length];
+    let mat2 = materials[(i*2) % materials.length];
+
+    let details = `Experiment ${i}: This is a detailed STEM experiment in the field of ${cat}. It is classified as ${diff} difficulty and uses materials such as ${mat1} and ${mat2}. In this experiment, students will explore core concepts and observe results directly through hands-on activity. They will follow steps carefully, take notes, and understand the underlying principles that govern the experiment. Encouraging curiosity and testing hypotheses are key. Variations can include slight changes to materials or procedures to observe different outcomes. Safety precautions should always be followed. Questions to consider include: How does ${cat} principle work in real life? What happens if variables are changed? This experiment builds critical thinking, problem-solving skills, and inspires further exploration in ${cat}. Continue the learning journey by experimenting with related concepts and encouraging observation and reflection throughout the process.`;
+
+    ideas.push({
+        title: `${cat} Adventure #${i}`,
+        category: cat,
+        difficulty: diff,
+        materials: [mat1, mat2],
+        details: details
+    });
+}
+
+// ----------------------------
+// Populate feed with clickable cards and like/dislike buttons
+// ----------------------------
+const feed = document.getElementById('feed');
+const modal = document.getElementById('modal');
+const modalTitle = document.getElementById('modalTitle');
+const modalText = document.getElementById('modalText');
+const closeModal = document.getElementById('closeModal');
+
+ideas.forEach((idea) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+        <div class="card-title">${idea.title}</div>
+        ${idea.category} | ${idea.difficulty}
+        <div class="buttons">
+            <button class="like">❤️ Like</button>
+            <button class="dislike">👎 Dislike</button>
+        </div>
+    `;
+
+    // Card click shows modal
+    card.onclick = (e) => {
+        if (!e.target.classList.contains('like') && !e.target.classList.contains('dislike')) {
+            modal.style.display = "block";
+            modalTitle.textContent = idea.title;
+            modalText.textContent = idea.details;
+        }
+    };
+
+    // Like button toggle
+    const likeBtn = card.querySelector('.like');
+    likeBtn.onclick = (e) => {
+        e.stopPropagation();
+        likeBtn.textContent = likeBtn.textContent === '❤️ Like' ? '💖 Liked' : '❤️ Like';
+    };
+
+    // Dislike button toggle
+    const dislikeBtn = card.querySelector('.dislike');
+    dislikeBtn.onclick = (e) => {
+        e.stopPropagation();
+        dislikeBtn.textContent = dislikeBtn.textContent === '👎 Dislike' ? '❌ Disliked' : '👎 Dislike';
+    };
+
+    feed.appendChild(card);
+});
+
+// ----------------------------
+// Close modal functionality
+// ----------------------------
+closeModal.onclick = () => { modal.style.display = "none"; };
+window.onclick = (event) => { if(event.target == modal) modal.style.display = "none"; };
+</script>
+
+</body>
+</html>
+    
+  </body>
+  
+</html>
